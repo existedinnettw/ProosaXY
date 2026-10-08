@@ -24,7 +24,7 @@ Upstream = "https://github.com/SnakeOilXY/ProosaXY"
 dev = ["fcppm>=0.2.4"]
 
 [tool.fcppm]
-branch = "master"
+branch = "fcppm"  # the packaging lives here; master tracks upstream
 tags = ["3d-printer", "corexy", "assembly"]
 wheel-include = ["src/**", "doc/**"]
 

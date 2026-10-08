@@ -110,7 +110,7 @@ Link its documents from your own assembly through `3rd/proosaxy/src/freecad/…`
 
 ### Releasing
 
-Set `[project].version` in `pyproject.toml`, merge, and push the tag `vX.Y.Z`. `.github/workflows/release.yml` checks the tag against the version, runs the CI checks, publishes sdist and wheel to the index and attaches them to a GitHub release. The `GITEA_PYPI_*` secrets are pushed to this repo by git-acc-rtn's secret-sync workflow.
+The packaging lives on the `fcppm` branch; `master` tracks upstream (merge upstream into `fcppm` to follow it). Set `[project].version` in `pyproject.toml` on `fcppm` and push the tag `vX.Y.Z`. `.github/workflows/release.yml` checks the tag against the version, runs the CI checks, publishes sdist and wheel to the index and attaches them to a GitHub release. The `GITEA_PYPI_*` secrets are pushed to this repo by git-acc-rtn's secret-sync workflow.
 
 ## 5. Copyright Notice
 
