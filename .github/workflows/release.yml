@@ -44,8 +44,10 @@ jobs:
             echo "tag ${GITHUB_REF_NAME} != v${version} in pyproject.toml"; exit 1; }
 
       - run: uv lock --check
-      - run: uv tool run --from "fcppm>=0.2.4" fcppm lint
-      - run: uv build
+      # fcppm as locked in uv.lock, for lint and as the build backend
+      - run: uv export --only-group dev --no-hashes --no-emit-project --no-header -o "$RUNNER_TEMP/build-constraints.txt"
+      - run: uv run --locked fcppm lint
+      - run: uv build --build-constraints "$RUNNER_TEMP/build-constraints.txt"
       - name: The assemblies are in the wheel
         run: python3 .github/workflows/wheel_content.py dist/*.whl
 
