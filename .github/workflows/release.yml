@@ -9,8 +9,9 @@ name: release
 #   GITEA_PYPI_URL                            - publish endpoint,
 #                                               e.g. https://gitea.example.org/api/packages/<org>/pypi
 #
-# A file whose name the index already lists is skipped, so re-running a release after a
-# partial failure is safe; Gitea itself refuses to overwrite a version.
+# A file the index already lists is not uploaded again, so re-running a release after a partial
+# failure is safe; if the rebuilt file differs from the published one, the release ships the
+# published copy. Gitea itself refuses to overwrite a version.
 
 on:
   push:
@@ -46,7 +47,10 @@ jobs:
       - run: uv lock --check
       # fcppm as locked in uv.lock, for lint and as the build backend
       - run: uv export --only-group dev --no-hashes --no-emit-project --no-header -o "$RUNNER_TEMP/build-constraints.txt"
-      - run: uv run --locked fcppm lint
+      # the locked fcppm, without building the project (`uv run` would build it with an
+      # unconstrained backend)
+      - run: uv sync --locked --no-install-project
+      - run: uv run --no-sync fcppm lint
       - run: uv build --build-constraints "$RUNNER_TEMP/build-constraints.txt"
       - name: The assemblies are in the wheel
         run: python3 .github/workflows/wheel_content.py dist/*.whl
@@ -59,12 +63,20 @@ jobs:
           for f in dist/*.tar.gz dist/*.whl; do
             file=$(basename "$f")
             name=$(echo "${file%%-[0-9]*}" | tr '_' '-')
-            if curl -fsS --max-time 120 -u "$UV_PUBLISH_USERNAME:$UV_PUBLISH_PASSWORD" \
-                "$PUBLISH_URL/simple/$name/" 2>/dev/null | grep -qF "$file"; then
+            # the index's link to this file, if any: .../<file>#sha256=<hash>
+            link=$(curl -fsS --max-time 120 -u "$UV_PUBLISH_USERNAME:$UV_PUBLISH_PASSWORD" \
+                "$PUBLISH_URL/simple/$name/" 2>/dev/null | grep -o "href=\"[^\"]*/$file#sha256=[0-9a-f]*" | head -n 1 || true)
+            if [ -z "$link" ]; then
+              uv publish --publish-url "$PUBLISH_URL" "$f"
+            elif [ "${link##*sha256=}" = "$(sha256sum "$f" | cut -d' ' -f1)" ]; then
               echo "skip $file: already in the index"
-              continue
+            else
+              # a rerun rebuilt different bytes; the index keeps its copy, so the release ships that one
+              echo "replace $file with the copy already in the index"
+              url=${link#href=\"}
+              curl -fsS --max-time 600 -u "$UV_PUBLISH_USERNAME:$UV_PUBLISH_PASSWORD" -o "$f" "${url%%#*}"
+              test "${link##*sha256=}" = "$(sha256sum "$f" | cut -d' ' -f1)"
             fi
-            uv publish --publish-url "$PUBLISH_URL" "$f"
           done
 
       - name: GitHub release with the distributions
