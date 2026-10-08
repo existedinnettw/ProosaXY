@@ -1,12 +1,33 @@
+[build-system]
+requires = ["fcppm>=0.2.4"]
+build-backend = "fcppm"
+
 [project]
 name = "proosaxy"
-version = "0.1.0"
-requires-python = ">=3.14"
+version = "1.0.0"
+description = "Low cost CoreXY conversion mod for Prusa MK3/S"
+readme = "README.md"
+license = "GPL-3.0-only"
+license-files = ["LICENSE"]
+authors = [{ name = "SnakeOilXY" }]
+requires-python = ">=3.12"  # FreeCAD 1.1's Python (the snap's 1.1.1 runs 3.12)
 dependencies = [
-    "freecad-fasteners>=0.5.67",
+    "freecad-fasteners==0.5.67", # Fasteners workbench: the screws and PEM inserts in every assembly
 ]
 
+[project.urls]
+Homepage = "https://github.com/existedinnettw/ProosaXY"
+Repository = "https://github.com/existedinnettw/ProosaXY"
+Upstream = "https://github.com/SnakeOilXY/ProosaXY"
+
 [dependency-groups]
-dev = [
-    "fcppm>=0.2.3",
-]
+dev = ["fcppm>=0.2.4"]
+
+[tool.fcppm]
+branch = "master"
+tags = ["3d-printer", "corexy", "assembly"]
+wheel-include = ["src/**", "doc/**"]
+
+[tool.uv]
+# rebuild on every `uv sync`, which runs the fcppm develop hook (package.xml)
+reinstall-package = ["proosaxy"]
