@@ -85,6 +85,33 @@ CoreXY conversion for Prusa MK3/S. This build is aiming at getting more performa
 ![](./doc/img/preview-06.jpg)
 ![](./doc/img/preview-07.jpg)
 
+## FreeCAD model with fcppm
+
+The Fasteners workbench the documents in `src/freecad/` need is locked per project by [fcppm](https://github.com/existedinnettw/fcppm); no Addon Manager install is needed. fcppm and `freecad-fasteners` (upstream's `V0.5.67-beta` release, packaged by [fcppm_recipes](https://github.com/existedinnettw/fcppm_recipes)) come from the `inkr` Gitea index (`https://gitea.insleker.org/api/packages/inkr_org/pypi/simple/`, configured in `~/.config/uv/uv.toml` or `UV_INDEX`; log in once with `uv auth login gitea.insleker.org`). Versions are pinned in `uv.lock`.
+
+```bash
+uv sync --locked
+uv run fcppm sync                                            # 3rd/freecad-fasteners, FreeCAD.cfg
+uv run fcppm run src/freecad/component-assembly/MAIN.FCStd   # FreeCAD with the locked Fasteners
+```
+
+### Using the model in another project
+
+The model is published to the same index as the fcppm package `proosaxy`: the documents in `src/` and `doc/`, with Fasteners as a dependency.
+
+```bash
+uv add proosaxy
+uv add --dev fcppm
+uv run fcppm sync                                            # 3rd/proosaxy, 3rd/freecad-fasteners
+uv run fcppm run 3rd/proosaxy/src/freecad/component-assembly/MAIN.FCStd
+```
+
+Link its documents from your own assembly through `3rd/proosaxy/src/freecad/…`.
+
+### Releasing
+
+The packaging lives on the `fcppm` branch; `master` tracks upstream (merge upstream into `fcppm` to follow it). Set `[project].version` in `pyproject.toml` on `fcppm` and push the tag `vX.Y.Z`. `.github/workflows/release.yml` checks the tag against the version, runs the CI checks, publishes sdist and wheel to the index and attaches them to a GitHub release. The `GITEA_PYPI_*` secrets are pushed to this repo by git-acc-rtn's secret-sync workflow.
+
 ## 5. Copyright Notice
 
 This printer design use the following parts from other opensource project:

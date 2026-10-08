@@ -1,14 +1,14 @@
 version = 1
 revision = 3
-requires-python = ">=3.14"
+requires-python = ">=3.12"
 
 [[package]]
 name = "fcppm"
-version = "0.2.3"
+version = "0.2.4"
 source = { registry = "https://gitea.insleker.org/api/packages/inkr_org/pypi/simple/" }
-sdist = { url = "https://gitea.insleker.org/api/packages/inkr_org/pypi/files/fcppm/0.2.3/fcppm-0.2.3.tar.gz", hash = "sha256:7ba3561df1e0da1b8b9be0affadc8dcbca7e7db037fe82426856209c5874e229" }
+sdist = { url = "https://gitea.insleker.org/api/packages/inkr_org/pypi/files/fcppm/0.2.4/fcppm-0.2.4.tar.gz", hash = "sha256:2fa03761fde2512bdbc34d5fe666a5df19d8cf7b27fcac2c74ea2347ebc47b4a" }
 wheels = [
-    { url = "https://gitea.insleker.org/api/packages/inkr_org/pypi/files/fcppm/0.2.3/fcppm-0.2.3-py3-none-any.whl", hash = "sha256:6a6052b070ef13d176471a700dfabacad9510f5652bbdf747f3d767b3912ffb7" },
+    { url = "https://gitea.insleker.org/api/packages/inkr_org/pypi/files/fcppm/0.2.4/fcppm-0.2.4-py3-none-any.whl", hash = "sha256:edb55e7a2f244376d317e54ac22b7fd2ed0dd60669e26a84a16c2ff4617df7ca" },
 ]
 
 [[package]]
@@ -22,8 +22,8 @@ wheels = [
 
 [[package]]
 name = "proosaxy"
-version = "0.1.0"
-source = { virtual = "." }
+version = "1.0.0"
+source = { editable = "." }
 dependencies = [
     { name = "freecad-fasteners" },
 ]
@@ -34,7 +34,7 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "freecad-fasteners", specifier = ">=0.5.67" }]
+requires-dist = [{ name = "freecad-fasteners", specifier = "==0.5.67" }]
 
 [package.metadata.requires-dev]
-dev = [{ name = "fcppm", specifier = ">=0.2.3" }]
+dev = [{ name = "fcppm", specifier = ">=0.2.4" }]
