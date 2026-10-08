@@ -101,6 +101,7 @@ The model is published to the same index as the fcppm package `proosaxy`: the do
 
 ```bash
 uv add proosaxy
+uv add --dev fcppm
 uv run fcppm sync                                            # 3rd/proosaxy, 3rd/freecad-fasteners
 uv run fcppm run 3rd/proosaxy/src/freecad/component-assembly/MAIN.FCStd
 ```
