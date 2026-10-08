@@ -14,8 +14,11 @@ permissions:
 
 jobs:
   check:
-    # Pull requests from forks get no secrets, so they cannot read the index: skip rather than fail.
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    # Pull requests from forks and Dependabot get no Actions secrets, so they cannot read the
+    # index: skip rather than fail.
+    if: >-
+      github.actor != 'dependabot[bot]' &&
+      (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: ubuntu-latest
     env:
       UV_INDEX: inkr=https://gitea.insleker.org/api/packages/inkr_org/pypi/simple/
